@@ -1,9 +1,9 @@
 package com.workintech.s18d4.controller;
 
-import com.workintech.s18d4.entity.Account;
-import com.workintech.s18d4.entity.Customer;
 import com.workintech.s18d4.dto.AccountResponse;
 import com.workintech.s18d4.dto.CustomerResponse;
+import com.workintech.s18d4.entity.Account;
+import com.workintech.s18d4.entity.Customer;
 import com.workintech.s18d4.service.AccountService;
 import com.workintech.s18d4.service.CustomerService;
 import lombok.AllArgsConstructor;
@@ -25,19 +25,19 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public Account findById(@PathVariable long id) {
+    public Account findAll(@PathVariable long id) {
         return accountService.find(id);
     }
 
     @PostMapping("/{customerId}")
     public AccountResponse save(@PathVariable("customerId") long customerId, @RequestBody Account account) {
         Customer customer = customerService.find(customerId);
-        if(customer != null) {
+        if (customer != null) {
             customer.getAccounts().add(account);
             account.setCustomer(customer);
             accountService.save(account);
         } else {
-            throw new RuntimeException("Customer not found!");
+            throw new RuntimeException("no customer found!");
         }
         return new AccountResponse(account.getId(), account.getAccountName(), account.getMoneyAmount(),
                 new CustomerResponse(customer.getId(), customer.getEmail(), customer.getSalary()));
@@ -52,7 +52,6 @@ public class AccountController {
                 toBeUpdatedAccount = account1;
             }
         }
-
         if (toBeUpdatedAccount == null) {
             throw new RuntimeException("Account(" + account.getId() + ") not found for this customer: " + customerId);
         }
@@ -71,9 +70,9 @@ public class AccountController {
         if (account == null) {
             throw new RuntimeException("no account found");
         }
-
         accountService.delete(id);
         return new AccountResponse(account.getId(), account.getAccountName(), account.getMoneyAmount(),
                 new CustomerResponse(account.getCustomer().getId(), account.getCustomer().getEmail(), account.getCustomer().getSalary()));
     }
+
 }

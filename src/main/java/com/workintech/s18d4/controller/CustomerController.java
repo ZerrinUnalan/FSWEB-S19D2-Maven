@@ -15,24 +15,20 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
-    }
-
     @GetMapping
-    public List<Customer> getAll() {
+    public List<Customer> getAll(){
         return customerService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Customer getById(@PathVariable long id) {
+    public Customer get(@PathVariable long id){
         return customerService.find(id);
     }
-
     @PostMapping
     public CustomerResponse save(@RequestBody Customer customer) {
         Customer saved = this.customerService.save(customer);
         return new CustomerResponse(saved.getId(), saved.getEmail(), saved.getSalary());
+
     }
 
 }
